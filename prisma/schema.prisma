@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int       @id @default(autoincrement())
+  name              String    @db.VarChar(512)
+  email             String    @unique
+  password          String
+  phone             String?
+  backupPhone       String?
+  photoUrl          String?
+  isActive          Boolean   @default(true)
+  role              String
+  addressId         Int?      @unique
+  address           Address?  @relation(references: [id], fields: [addressId])
+  loginAt           DateTime?
+  passwordResetCode String?   @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+}
+
+model Address {
+  id        Int      @id @default(autoincrement())
+  street    String
+  district  String
+  User      User?
+  number    String
+  state     String
+  city      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+// model Modalidate {
+//   id @id
+//   name String
+//   type 
+// }
